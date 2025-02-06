@@ -16,6 +16,7 @@ exports.capturePayment = async(req, res) => {
     console.log("yaha taak phoch gaya ")
 
     const { courses } = req.body
+    console.log("pritining course" ,courses);
     const userId = req.user.id
 
     if( courses.length === 0){
@@ -27,10 +28,10 @@ exports.capturePayment = async(req, res) => {
 
     let totalAmount = 0
 
-    for(const course_id of courses) {
+    for(const courseId of courses) {
         let course;
         try{
-            course = await Course.findById(course_id);
+            course = await Course.findById(courseId);
             if(!course){
                 return res.status(200).json({
                     success: false,
@@ -57,10 +58,10 @@ exports.capturePayment = async(req, res) => {
         }
     }
 
-    const curreny = "INR"
+    const currency = "INR"
     const options = {
         amount: totalAmount*100, 
-        // curreny,
+        currency,
         receipt: Math.random(Date.now()).toString()
     }
 
@@ -188,7 +189,7 @@ const enrollStudents = async(courses, userId, res) => {
     }
 }
 
-exports.sendPayemntSuccessEmail = async(req, res) => {
+exports.sendPaymentSuccessEmail = async(req, res) => {
     
     const { orderId, paymentId, amount } = req.body;
     const userId = req.user.id

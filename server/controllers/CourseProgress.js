@@ -1,18 +1,18 @@
 const CourseProgress = require("../models/CourseProgress")
 const SubSection = require("../models/SubSection")
 
-exports.updateCourseProgress = async(req, res) => {
+exports.updateCourseProgress = async (req, res) => {
 
     console.log("Controller tak aagaya ")
 
     const { courseId, subSectionId } = req.body
     const userId = req.user.id
 
-    try{
+    try {
 
         // check if the subsection is valid
-        const subsection = await SubSection.findOne({ _id: subSectionId})
-        if(!subsection) {
+        const subsection = await SubSection.findOne({ _id: subSectionId })
+        if (!subsection) {
             return res.status(401).json({ error: "Invalid Sub Section" })
         }
 
@@ -23,12 +23,12 @@ exports.updateCourseProgress = async(req, res) => {
             courseID: courseId,
             userId: userId
         })
-
         
 
-        console.log("course progress document",courseProgress)
 
-        
+        console.log("course progress document", courseProgress)
+
+
 
         if (!courseProgress) {
             // If course progress doesn't exist create a new one
@@ -38,8 +38,8 @@ exports.updateCourseProgress = async(req, res) => {
             })
         } else {
             // if the course progress exist check if the subsection is already completed
-            if( courseProgress.completeVideos.includes(subSectionId)) {
-                return res.status(400).json({ error: "SubSection is already completed"})
+            if (courseProgress.completeVideos.includes(subSectionId)) {
+                return res.status(400).json({ error: "SubSection is already completed" })
             }
 
             // Push the subsection into the completed Videos array
@@ -49,9 +49,9 @@ exports.updateCourseProgress = async(req, res) => {
         //save the updated course Progress
         await courseProgress.save()
 
-        await res.status(200).json({ message: "Course progress updated"})
-    } catch(error){
-        console.error("Cours progress api error",error)
+        await res.status(200).json({ success: true, message: "Course progress updated" })
+    } catch (error) {
+        console.error("Cours progress api error", error)
         return res.status(500).json({
             success: false,
             message: "unable to update the course progress",
@@ -61,25 +61,25 @@ exports.updateCourseProgress = async(req, res) => {
 
 }
 
-exports.getCompletedLectures = async(req, res) => {
-    try{
+exports.getCompletedLectures = async (req, res) => {
+    try {
         const courseId = req.body.courseId
         console.log(req.body)
         const userId = req.user.id
 
-        console.log("Here I am ", courseId ,userId)
+        console.log("Here I am ", courseId, userId)
 
         // check whether the course progress exist or not
-        const courseProgress = await CourseProgress.findOne({courseID: courseId, userId: userId})
+        const courseProgress = await CourseProgress.findOne({ courseID: courseId, userId: userId })
 
-        if(!courseProgress){
+        if (!courseProgress) {
             return res.status(404).json({
                 success: false,
                 message: "Unable to get course progress ",
             })
         }
 
-        console.log("inside courseprogress controller",courseProgress)
+        console.log("inside courseprogress controller", courseProgress)
 
         return res.status(200).json({
             success: true,
@@ -87,8 +87,8 @@ exports.getCompletedLectures = async(req, res) => {
             message: "Completed video array sent successfully"
         })
 
-    } catch(error){
-        console.log("Error in getCompletedLectures",error)
+    } catch (error) {
+        console.log("Error in getCompletedLectures", error)
         return res.status(500).success({
             success: false,
             message: "Unable to get completed lectures",

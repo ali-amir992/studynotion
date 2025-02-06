@@ -23,7 +23,7 @@ exports.auth = async(req, res, next) => {
             console.log(decode)
             req.user = decode
             console.log("Inside auth",req.user)
-        } catch(error){
+        } catch(error){ 
             //verification - issue
             return res.status(401).json({
                 success:false,
